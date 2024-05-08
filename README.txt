@@ -85,7 +85,7 @@ python3 namedGame.py myPlayer randomPlayer
 --> Va lancer un match entre votre joueur (NOIRS) et le randomPlayer
  (BLANC)
 
- python3 namedGame gnugoPlayer myPlayer
- --> gnugo (level 0) contre votre joueur (très dur à battre)
+python3 namedGame.py gnugoPlayer myPlayer
+--> gnugo (level 0) contre votre joueur (très dur à battre)
 
 

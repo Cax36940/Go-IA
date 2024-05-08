@@ -1,16 +1,11 @@
 # -*- coding: utf-8 -*-
-''' This is the file you have to modify for the tournament. Your default AI player must be called by this module, in the
-myPlayer class.
-
-Right now, this class contains the copy of the randomPlayer. But you have to change this!
+''' This is the famous random player whici (almost) always looses.
 '''
 
 import time
 import Goban 
 from random import choice
 from playerInterface import *
-
-
 
 class myPlayer(PlayerInterface):
     ''' Example of a random player for the go. The only tricky part is to be able to handle
@@ -24,32 +19,19 @@ class myPlayer(PlayerInterface):
         self._mycolor = None
 
     def getPlayerName(self):
-        return "Player1"
+        return "Random Player"
 
     def getPlayerMove(self):
         if self._board.is_game_over():
-            print("Referee told me to play but the game is over!")
             return "PASS" 
         moves = self._board.legal_moves() # Dont use weak_legal_moves() here!
-        move = 0
-        if 27 in moves :
-            move = 27
-        elif 36 in moves :
-            move = 36
-        else :
-            move = choice(moves) 
-
+        move = choice(moves) 
         self._board.push(move)
 
-        # New here: allows to consider internal representations of moves
-        # print("I am playing ", self._board.move_to_str(move))
-        # print("My current board :")
-        # self._board.prettyPrint()
         # move is an internal representation. To communicate with the interface I need to change if to a string
         return Goban.Board.flat_to_name(move) 
 
     def playOpponentMove(self, move):
-        # print("Opponent played ", move) # New here
         # the board needs an internal represetation to push the move.  Not a string
         self._board.push(Goban.Board.name_to_flat(move)) 
 

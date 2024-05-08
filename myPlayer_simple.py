@@ -9,6 +9,7 @@ import time
 import Goban 
 from random import choice
 from playerInterface import *
+import numpy as np
 
 
 
@@ -24,20 +25,23 @@ class myPlayer(PlayerInterface):
         self._mycolor = None
 
     def getPlayerName(self):
-        return "Player1"
+        return "Random Player"
 
     def getPlayerMove(self):
         if self._board.is_game_over():
             print("Referee told me to play but the game is over!")
             return "PASS" 
+        
         moves = self._board.legal_moves() # Dont use weak_legal_moves() here!
-        move = 0
+ 
+        # move = 0
+        # print(self._mycolor)
         if 27 in moves :
             move = 27
         elif 36 in moves :
             move = 36
         else :
-            move = choice(moves) 
+            move = self.play_alphabeta(self._mycolor, 3, -1000000, 1000000, True)
 
         self._board.push(move)
 
@@ -64,4 +68,47 @@ class myPlayer(PlayerInterface):
             print("I lost :(!!")
 
 
+    def heur(self):
+        return 0 
 
+    def play_alphabeta(self, player, depth, alpha, beta, ret_coup = False):
+
+        if depth == 0 or self._board._gameOver:
+            return self.heur()
+
+        coup = []
+        last_alpha = alpha
+
+        if ret_coup :
+            moves = self._board.legal_moves()
+        else :
+            moves = self._board.weak_legal_moves()
+
+        for move in moves:
+
+            self._board.push(move)
+
+            if player == self._mycolor:
+                alpha = max(alpha, self.play_alphabeta(3 - self._mycolor, depth - 1, alpha, beta))
+            else :
+                beta = min(beta, self.play_alphabeta(self._mycolor, depth - 1, alpha, beta))
+
+            self._board.pop()
+
+            if ret_coup :
+                if last_alpha == alpha :
+                    coup.append(move)
+                else :
+                    coup = [move]
+                    last_alpha = alpha
+
+            if alpha >= beta : 
+                return beta
+
+        if ret_coup :
+            return choice(coup)
+
+        if player == self._mycolor:
+            return alpha
+        else:
+            return beta
