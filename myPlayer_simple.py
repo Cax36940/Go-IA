@@ -43,7 +43,7 @@ class myPlayer(PlayerInterface):
         else :
             move = self.play_alphabeta(self._mycolor, 3, -1000000, 1000000, True)
 
-        self._board.push(move)
+        self._board.play_move(move)
 
         # New here: allows to consider internal representations of moves
         # print("I am playing ", self._board.move_to_str(move))
@@ -69,7 +69,8 @@ class myPlayer(PlayerInterface):
 
 
     def heur(self):
-        return 0 
+        return np.count_nonzero(self._board._board == self._mycolor) - 2 * np.count_nonzero(self._board._board == (3 - self._mycolor))
+        
 
     def play_alphabeta(self, player, depth, alpha, beta, ret_coup = False):
 
