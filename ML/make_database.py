@@ -56,17 +56,28 @@ def board_to_coords(board):
 
     return (black_coord, white_coord)
 
-def new_data_format(player_coords, depth):
-    return {"current_player" : depth%2, "black_coord" : player_coords[0], "white_coord" : player_coords[1]}
+def new_data_format(player_coords, depth, black_wins, white_wins):
+    return {"current_player" : depth%2, "black_coord" : player_coords[0], "white_coord" : player_coords[1], "black_wins" : black_wins, "white_wins" : white_wins}
 
 def boardx16(a_data):
     board = move_to_board(a_data["black_stones"], a_data["white_stones"])
+
+    black_wins = a_data["black_wins"]
+    white_wins = a_data["white_wins"]
+
     boards = []
-    for color in [1, -1]:
-        for i in range(4):
-            boards.append(new_data_format(board_to_coords(board * color), a_data["depth"] + (1 if color == -1 else 0)))
-            boards.append(new_data_format(board_to_coords(np.transpose(board * color)), a_data["depth"] + (1 if color == -1 else 0)))
-            board = np.rot90(board)
+    for i in range(4):
+        boards.append(new_data_format(board_to_coords(board), a_data["depth"], black_wins, white_wins))
+        boards.append(new_data_format(board_to_coords(np.transpose(board)), a_data["depth"], black_wins, white_wins))
+        board = np.rot90(board)
+    
+    board = -1 * board
+
+    for i in range(4):
+        boards.append(new_data_format(board_to_coords(board), a_data["depth"] + 1, white_wins, black_wins))
+        boards.append(new_data_format(board_to_coords(np.transpose(board)), a_data["depth"] + 1, white_wins, black_wins))
+        board = np.rot90(board)
+
     return boards
 
 
